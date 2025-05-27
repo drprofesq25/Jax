@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hey Jax</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background-color: #111;
+      color: #0f0;
+      padding: 20px;
+    }
+    h1 {
+      color: #00ffff;
+      font-size: 2em;
+    }
+    #response {
+      margin-top: 20px;
+      padding: 10px;
+      background: #222;
+      border-left: 4px solid #0f0;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+      border: none;
+      background: #222;
+      color: #0f0;
+      border-bottom: 2px solid #0f0;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      background: #0f0;
+      color: #000;
+      font-weight: bold;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hey Jax</h1>
+  <p>Ask me anything about Minecraft.</p>
+  <input type="text" id="question" placeholder="What's your Minecraft question?" />
+  <button onclick="askJax()">Ask</button>
+  <div id="response"></div>
+
+  <script>
+    function askJax() {
+      const q = document.getElementById("question").value;
+      document.getElementById("response").innerText = "Thinking...";
+      fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer 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'
+        },
+        body: JSON.stringify({
+          model: "gpt-4",
+          messages: [
+            { role: "system", content: "You are Jax, the ultimate Minecraft assistant for a smart kid named Leo. Be playful and clear. Offer advanced tips when appropriate." },
+            { role: "user", content: q }
+          ]
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const reply = data.choices?.[0]?.message?.content || "Sorry, Jax is taking a nap!";
+        document.getElementById("response").innerText = reply;
+      })
+      .catch(() => {
+        document.getElementById("response").innerText = "Error talking to Jax. Try again!";
+      });
+    }
+  </script>
+</body>
+</html>
